@@ -1,16 +1,17 @@
 const { ConflictError, ValidationError, NotFoundError, InternalServerError, BadRequestError } = require("../errors/customError");
-const globalExercisesService = require('../services/globalExerciseService');
+const userExercisesService = require('../services/userExerciseService');
 const { handleErrors } = require("../errors/errorHandler");
 
 const addExercise = async (req, res) => {
     try {
         const name = req.body.name;
+        const userId = req.user.id
 
-        if (!name) {
-            throw new BadRequestError("Name field is required.");
+        if (!name || !userId) {
+            throw new BadRequestError("both name and userId is required.");
         }
 
-        const exercise = await globalExercisesService.addExercise(name);
+        const exercise = await userExercisesService.addExercise(name, userId);
         res.status(201).json(exercise);
 
     } catch (error) {
@@ -21,7 +22,14 @@ const addExercise = async (req, res) => {
 
 const listExercises = async (req, res) => {
     try {
-        const exercises = await globalExercisesService.listExercises();
+        const userId = req.user.id
+
+        if(!userId){
+            throw new BadRequestError("UserId is required")
+        }
+
+
+        const exercises = await userExercisesService.listExercises(userId);
         res.status(200).json(exercises);
     } catch (error) {
         handleErrors(error, res);
@@ -32,13 +40,16 @@ const listExercises = async (req, res) => {
 const editExercise = async (req, res) => {
     try {
         const name = req.body.name;
-        const id = req.params.id;
+        const exerciseId = req.params.id;
+        const userId = req.user.id
 
-        if (!name || !id) {
-            throw new BadRequestError("Both id and name fields are required.");
+        
+
+        if (!name || !exerciseId || !userId) {
+            throw new BadRequestError("All id, userId and name fields are required.");
         }
 
-        const exercise = await globalExercisesService.editExercise(id, name);
+        const exercise = await userExercisesService.editExercise(exerciseId, name, userId);
         res.status(200).json(exercise);
     } catch (error) {
         handleErrors(error, res);
@@ -48,12 +59,14 @@ const editExercise = async (req, res) => {
 const deleteExercise = async (req, res) => {
     try {
         const id = req.params.id;
+        const userId = req.user.id
 
-        if (!id) {
-            throw new BadRequestError("Id field is required.");
+
+        if (!id || !userId) {
+            throw new BadRequestError("Both Id and userId field is required.");
         }
 
-        await globalExercisesService.deleteExercise(id);
+        await userExercisesService.deleteExercise(id, userId);
         res.status(200).json({ message: 'Exercise deleted successfully' });
     } catch (error) {
         handleErrors(error, res);

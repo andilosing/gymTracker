@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const RefreshTokens = require("../models/refreshTokens")
+const { UnauthorizedError, InternalServerError } = require('../errors/customError');
 
 
 const generateAccessToken = (user) => {
@@ -12,7 +13,7 @@ const generateAccessToken = (user) => {
             email_verified: user.email_verified,
             role: user.role
         }
-        const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: '1m' });  
+        const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: '15m' });  
         return accessToken;
     } catch (error) {
         console.error("Fehler beim Generieren des Access Tokens:", error);
@@ -43,8 +44,7 @@ const verifyToken = (token) => {
         const decodedToken = jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET);
         return decodedToken;
     } catch (error) {
-        console.error("Fehler beim Verifizieren des Tokens:", error);
-        throw new Error("Ungültiger oder abgelaufener Token");
+        throw new UnauthorizedError("Ungültiger oder abgelaufener Token");
     }
 }
 
@@ -52,7 +52,6 @@ const refreshAccessToken = async (token) => {
     try {
         const savedTokenInfo = await RefreshTokens.findToken(token);
 
-        console.log(savedTokenInfo)
         
         if (!savedTokenInfo) {
             throw new Error("Invalid refresh token");

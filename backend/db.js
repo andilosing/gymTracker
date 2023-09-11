@@ -16,6 +16,7 @@ const db = new Client({
       await createUsersTable();
       await createRefreshTokenTable();
       await createGlobalExerciseTable();
+      await createUserExerciseTable();
   })
   .catch((err) => {
       console.error('Error connecting to PostgreSQL', err);
@@ -81,8 +82,7 @@ const createUserExerciseTable = async () => {
         CREATE TABLE IF NOT EXISTS user_exercises (
             id SERIAL PRIMARY KEY,
             user_id INT REFERENCES users(id) ON DELETE CASCADE,
-            name VARCHAR(255) NOT NULL,
-            description TEXT
+            name VARCHAR(255) NOT NULL UNIQUE
         );
         `;
 

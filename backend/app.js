@@ -6,6 +6,7 @@ const cors = require("cors");
 
 const authRoutes = require("./routes/authRoutes")
 const globalExerciseRoutes = require("./routes/globalExerciseRoutes")
+const userExerciseRoutes = require("./routes/userExerciseRoutes")
 
 const authTokenMiddleware = require("./middlewares/authTokenMiddleware")
 const authRoleMiddleware = require("./middlewares/authRoleMiddleware")
@@ -29,9 +30,11 @@ app.use(cookieParser());
 
 app.use('/auth', authRoutes);
 
-app.use("/global-exercise", globalExerciseRoutes)
+app.use("/global-exercise", authTokenMiddleware.authenticateJWT, authRoleMiddleware.authorizeUserRole("admin"), globalExerciseRoutes)
 
-app.use("/protected", authTokenMiddleware.authenticateJWT, authRoleMiddleware.authorizeUserRole(["adimin", "user"]), (req, res) => {
+app.use("/user-exercise", authTokenMiddleware.authenticateJWT, authRoleMiddleware.authorizeUserRole(["admin", "user"]), userExerciseRoutes)
+
+app.use("/protected", authTokenMiddleware.authenticateJWT, authRoleMiddleware.authorizeUserRole(["admin", "user"]), (req, res) => {
     res.json({message: "This is a authenticatet path!", 
     user: req.user})
 })
