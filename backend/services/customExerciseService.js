@@ -1,9 +1,9 @@
-const userExercisesModel = require('../models/userExercisesModel');
-const { InternalServerError } = require('../errors//customError');  
+const customExercisesModel = require('../models/customExercisesModel');
+const { InternalServerError } = require('../errors/customError');  
 
 const addExercise = async (name, userId) => {
     try {
-        const exercise = await userExercisesModel.createExercise(name, userId);
+        const exercise = await customExercisesModel.createExercise(name, userId);
         return exercise;
     } catch (error) {
         if (error.customError) {
@@ -16,7 +16,7 @@ const addExercise = async (name, userId) => {
 
 const listExercises = async (userId) => {
     try {
-        const exercises = await userExercisesModel.findAllExercises(userId);
+        const exercises = await customExercisesModel.findAllExercises(userId);
         return exercises;
     } catch (error) {
         if (error.customError) {
@@ -30,7 +30,7 @@ const listExercises = async (userId) => {
 
 const editExercise = async (id, name, userId) => {
     try {
-        const exercise = await userExercisesModel.updateExercise(id, name, userId);
+        const exercise = await customExercisesModel.updateExercise(id, name, userId);
         return exercise;
     } catch (error) {
         if (error.customError) {
@@ -44,7 +44,7 @@ const editExercise = async (id, name, userId) => {
 
 const deleteExercise = async (id, userId) => {
     try {
-        await userExercisesModel.deleteExercise(id, userId);
+        await customExercisesModel.deleteExercise(id, userId);
     } catch (error) {
         if (error.customError) {
             throw error;

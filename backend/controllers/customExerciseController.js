@@ -1,5 +1,5 @@
 const { ConflictError, ValidationError, NotFoundError, InternalServerError, BadRequestError } = require("../errors/customError");
-const userExercisesService = require('../services/userExerciseService');
+const customExercisesService = require('../services/customExerciseService');
 const { handleErrors } = require("../errors/errorHandler");
 
 const addExercise = async (req, res) => {
@@ -11,7 +11,7 @@ const addExercise = async (req, res) => {
             throw new BadRequestError("both name and userId is required.");
         }
 
-        const exercise = await userExercisesService.addExercise(name, userId);
+        const exercise = await customExercisesService.addExercise(name, userId);
         res.status(201).json(exercise);
 
     } catch (error) {
@@ -29,7 +29,7 @@ const listExercises = async (req, res) => {
         }
 
 
-        const exercises = await userExercisesService.listExercises(userId);
+        const exercises = await customExercisesService.listExercises(userId);
         res.status(200).json(exercises);
     } catch (error) {
         handleErrors(error, res);
@@ -49,7 +49,7 @@ const editExercise = async (req, res) => {
             throw new BadRequestError("All id, userId and name fields are required.");
         }
 
-        const exercise = await userExercisesService.editExercise(exerciseId, name, userId);
+        const exercise = await customExercisesService.editExercise(exerciseId, name, userId);
         res.status(200).json(exercise);
     } catch (error) {
         handleErrors(error, res);
@@ -66,7 +66,7 @@ const deleteExercise = async (req, res) => {
             throw new BadRequestError("Both Id and userId field is required.");
         }
 
-        await userExercisesService.deleteExercise(id, userId);
+        await customExercisesService.deleteExercise(id, userId);
         res.status(200).json({ message: 'Exercise deleted successfully' });
     } catch (error) {
         handleErrors(error, res);

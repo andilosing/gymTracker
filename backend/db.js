@@ -13,10 +13,13 @@ const db = new Client({
   .then(async () => {
       console.log('Connected to PostgreSQL');
       
-      await createUsersTable();
-      await createRefreshTokenTable();
-      await createGlobalExerciseTable();
-      await createUserExerciseTable();
+      await createUsersTable()
+      await createRefreshTokenTable()
+      await createGlobalExerciseTable()
+      await createCustomExerciseTable()
+      await createWorkoutsTable()
+      await createWorkoutExerciseTable()
+      await createWorkoutSetsTable()
   })
   .catch((err) => {
       console.error('Error connecting to PostgreSQL', err);
@@ -76,10 +79,10 @@ const createGlobalExerciseTable = async () => {
     }
 };
 
-const createUserExerciseTable = async () => {
+const createCustomExerciseTable = async () => {
     try {
         const query = `       
-        CREATE TABLE IF NOT EXISTS user_exercises (
+        CREATE TABLE IF NOT EXISTS custom_exercises (
             id SERIAL PRIMARY KEY,
             user_id INT REFERENCES users(id) ON DELETE CASCADE,
             name VARCHAR(255) NOT NULL UNIQUE
@@ -91,7 +94,7 @@ const createUserExerciseTable = async () => {
         if (error.code === '23505') { // 23505 ist der Fehlercode für Unique Constraint Verstoß in PostgreSQL
             console.error('Ein Eintrag mit diesem Übungs-Namen existiert bereits.');
         } else {
-            console.error('Ein Fehler beim erstellen der Tabelle "global exercise" ist aufgetreten:', error);
+            console.error('Ein Fehler beim erstellen der Tabelle "custom exercise" ist aufgetreten:', error);
         }
     }
 };
@@ -102,7 +105,7 @@ const createWorkoutsTable = async () => {
         CREATE TABLE IF NOT EXISTS workouts (
             id SERIAL PRIMARY KEY,
             user_id INT REFERENCES users(id) ON DELETE CASCADE,
-            start_time TIMESTAMP NOT NULL,
+            start_time TIMESTAMP NOT NULL DEFAULT NOW(),
             end_time TIMESTAMP,
             duration INT,
             notes TEXT
@@ -122,7 +125,7 @@ const createWorkoutExerciseTable = async () => {
             id SERIAL PRIMARY KEY,
             workout_id INT REFERENCES workouts(id) ON DELETE CASCADE,
             global_exercise_id INT REFERENCES global_exercises(id) ON DELETE CASCADE,
-            user_exercise_id INT REFERENCES user_exercises(id) ON DELETE CASCADE
+            user_exercise_id INT REFERENCES custom_exercises(id) ON DELETE CASCADE
         );
         `;
 
@@ -140,7 +143,7 @@ const createWorkoutSetsTable = async () => {
             workout_exercise_id INT REFERENCES workout_exercises(id) ON DELETE CASCADE,
             reps INT NOT NULL,
             weight DECIMAL,
-            set_number INT NOT NULL
+            set_number INT NOT NULL UNIQUE
         );
         `;
 
