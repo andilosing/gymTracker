@@ -23,6 +23,16 @@ const register = async (username, email, password) => {
     }
 };
 
+const transporter = nodemailer.createTransport({
+    host: process.env.EMAIL_HOST,
+    port: process.env.EMAIL_PORT,
+    secure: process.env.EMALI_PORT,
+    auth: {
+        user: process.env.EMAIL_USER, 
+        pass: process.env.EMAIL_PASSWORD 
+    }
+});
+
 const sendConfirmationEmail = async (email) => {
     const user = await User.getUserFromEmail(email);
 
@@ -32,6 +42,7 @@ const sendConfirmationEmail = async (email) => {
 
     const token = jwt.sign({ email }, process.env.JWT_CONFIRMATION_EMAIL_KEY, { expiresIn: '1h' });
 
+  
     const mailOptions = {
         from: `Gopnik <${process.env.EMAIL_USER}>`,
         to: email,
@@ -44,6 +55,7 @@ const sendConfirmationEmail = async (email) => {
         console.log('Bestätigungs-E-Mail gesendet.');
         return token;
     } catch (error) {
+        console.log(error)
         throw new InternalServerError('Fehler beim Senden der Bestätigungs-E-Mail.');
     }
 }
