@@ -8,5 +8,6 @@ router.put("/:id", workoutsController.endWorkout)
 router.get("/:id/info", workoutsController.getWorkoutInfo)
 
 router.get("/:id", workoutsController.getWorkout)
+router.get("/", workoutsController.getAllWorkouts)
 
 module.exports = router;

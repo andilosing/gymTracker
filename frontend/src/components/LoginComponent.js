@@ -16,7 +16,7 @@ function LoginComponent() {
     if (token && !error) {
       setEmail("");
       setPassword("");
-      navigate("/start");
+      navigate("/workouts");
     }
 
   

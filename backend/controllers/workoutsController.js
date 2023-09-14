@@ -35,6 +35,22 @@ const getWorkout = async (req, res) => {
     }
 };
 
+const getAllWorkouts = async (req, res) => {
+    try {
+
+        const userId = req.user.id
+
+        if(!userId) {
+            throw new BadRequestError("User Id is required")
+        }
+
+        const workouts = await workoutsService.getAllWorkouts(userId);
+        res.status(200).json(workouts);
+    } catch (error) {
+        handleErrors(error, res);
+    }
+};
+
 
 const endWorkout = async (req, res) => {
     try {
@@ -92,5 +108,6 @@ module.exports = {
     getWorkout,
     endWorkout,
     deleteWorkout,
-    getWorkoutInfo
+    getWorkoutInfo,
+    getAllWorkouts
 };

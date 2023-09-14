@@ -5,6 +5,7 @@ import LoginComponent from './components/LoginComponent';
 import RegisterComponent from './components/RegisterComponent';
 import RequireEmailConfirmation from './wrapper/requireEmailVerification';
 import RequireAuth from './wrapper/requireAuthToken';
+import WorkoutComponent from './components/WorkoutComponent';
 
 
 function App() {
@@ -16,7 +17,8 @@ function App() {
 
         <Route element={<RequireEmailConfirmation />}>
           <Route element={<RequireAuth />}>
-            <Route path='start' element={<div>Start</div>} />
+            <Route path='/workouts' element={ <WorkoutComponent />} />
+            
           </Route>
         </Route>
 

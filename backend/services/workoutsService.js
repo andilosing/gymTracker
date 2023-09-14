@@ -27,6 +27,19 @@ const getWorkout = async (id) => {
     }
 };
 
+const getAllWorkouts = async (userId) => {
+    try {
+        const workout = await workoutsModel.getAllWorkouts(userId);
+        return workout;
+    } catch (error) {
+        if (error.customError) {
+            throw error;
+        } else {
+            throw new InternalServerError("Error getting all workouts");
+        }
+    }
+};
+
 
 const endWorkout = async (id, userId) => {
     try {
@@ -73,6 +86,7 @@ module.exports = {
     getWorkout,
     endWorkout,
     deleteWorkout,
-    getWorkoutInfo
+    getWorkoutInfo,
+    getAllWorkouts
 };
 

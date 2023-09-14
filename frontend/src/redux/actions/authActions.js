@@ -4,7 +4,6 @@ import { baseQueryWithReauth,  } from '../../api/api';
 
 export const loginUser = (credentials) => {
     return async (dispatch, getState) => {
-        
 
         try {
             const options = {
@@ -15,9 +14,7 @@ export const loginUser = (credentials) => {
             
 
            const data = await baseQueryWithReauth("/auth/login", options, dispatch, getState)
-           console.log(data)
 
-           console.log("error" + data.error)
            if (data.accessToken) {
             dispatch(loginSuccess(data));
            }

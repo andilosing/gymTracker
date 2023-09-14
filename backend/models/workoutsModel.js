@@ -17,6 +17,18 @@ const createWorkout = async (userId) => {
     }
 };
 
+const getAllWorkouts = async (userId) => {
+    try {
+       
+        const query = `SELECT * FROM workouts WHERE user_id = $1`;
+        const values = [userId];
+        const { rows } = await db.query(query, values);
+        return rows;
+    } catch (error) {
+        throw new InternalServerError("Database error: Cannot get all Workouts");
+    }
+};
+
 const getWorkout = async (id) => {
     try {
        
@@ -28,6 +40,7 @@ const getWorkout = async (id) => {
         throw new InternalServerError("Database error: Cannot get Workout");
     }
 };
+
 
 const endWorkout = async (id, userId) => {
     try {
@@ -94,7 +107,8 @@ module.exports = {
     getWorkout,
     endWorkout,
     deleteWorkout,
-    getWorkoutInfo
+    getWorkoutInfo,
+    getAllWorkouts
 };
 
 
