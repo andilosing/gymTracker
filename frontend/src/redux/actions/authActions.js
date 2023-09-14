@@ -1,8 +1,11 @@
-import { loginSuccess, registerSuccess, logout } from '../slices/authSlice';
+import { loginSuccess, registerSuccess, logout, resendEmailFailure, resendEmailSuccess, setError,clearError } from '../slices/authSlice';
 import { baseQueryWithReauth,  } from '../../api/api';
+
 
 export const loginUser = (credentials) => {
     return async (dispatch, getState) => {
+        
+
         try {
             const options = {
                 method: 'POST',
@@ -12,16 +15,17 @@ export const loginUser = (credentials) => {
             
 
            const data = await baseQueryWithReauth("/auth/login", options, dispatch, getState)
+           console.log(data)
 
-            
-            if (data.accessToken) {
-                dispatch(loginSuccess(data));
-            } else {
-                // Fehlerbehandlung
-            }
-        } catch (error) {
-            console.error('Login error:', error);
-        }
+           console.log("error" + data.error)
+           if (data.accessToken) {
+            dispatch(loginSuccess(data));
+           }
+    } catch (error) {
+        console.log(error)
+        dispatch(setError({status: error.status, message: error.message }));
+    }
+    
     };
 };
 
@@ -40,12 +44,27 @@ export const registerUser = (credentials) => {
 
             if (data.user) { // Wenn Ihr Server nach erfolgreicher Registrierung einen Zugriffstoken zurückgibt
                 dispatch(registerSuccess(data)); // Sie sollten eine entsprechende Redux-Action namens "registerSuccess" erstellen
-            } else {
-                // Fehlerbehandlung, z.B. dispatch(registerFailure(data));
-            }
+            } 
         } catch (error) {
             console.error('Registration error:', error);
-            // Hier könnten Sie auch eine registerError Action versenden, um Fehler im Redux Store zu speichern
+            dispatch(setError({status: error.status, message: error.message }));
+        }
+    };
+};
+
+export const resendConfirmationEmail = (email) => {
+    return async (dispatch, getState) => {
+        try {
+            const options = {
+                method: 'POST',
+                body: JSON.stringify({ email })
+            };
+            
+           
+            await baseQueryWithReauth("/auth/resend-confirmation-email", options, dispatch, getState);
+            dispatch(resendEmailSuccess());
+        } catch (error) {
+            dispatch(setError({status: error.status, message: error.message }));
         }
     };
 };

@@ -16,7 +16,10 @@ async function baseFetch(endpoint, options = {}) {
 
     if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'An error occurred');
+        throw {
+            message: errorData.error,
+            status: response.status
+        } //new Error(errorData.error || 'An error occurred');
     }
 
     

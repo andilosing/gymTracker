@@ -1,6 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { registerUser } from '../redux/actions/authActions';
+import { clearError } from '../redux/slices/authSlice';
 
 function RegisterComponent() {
   const [username, setUsername] = useState('');
@@ -9,40 +11,47 @@ function RegisterComponent() {
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
 
   const dispatch = useDispatch();
-  const { isAuthenticated, token, user } = useSelector(state => state.auth);
+  const navigate = useNavigate()
+  const { token, user, error } = useSelector(state => state.auth);
+
+  useEffect(() => {
+    if (user && !error) {
+      setUsername("")
+      setEmail("");
+      setPassword("");
+      setPasswordConfirmation("")
+      navigate("/start");
+    }
+
+  }, [user, error, navigate]);
+
+  useEffect(() => {
+    return () => {
+        dispatch(clearError());
+    }
+  }, [])
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Sie können hier eine Validierung für password und passwordConfirmation hinzufügen
-    if (password !== passwordConfirmation) {
-      console.error("Passwörter stimmen nicht überein");
-      return;
-    }
     dispatch(registerUser({ username, email, password, passwordConfirmation }));
   };
 
-  if (user) {
-    return (
-      <div>
-        <p>Sie sind registriert!</p>
-        <p></p>
-        <p>User: {user.username}</p> 
-      </div>
-    );
-  }
+
 
   return (
     <div>
       <h2>Registrieren</h2>
-      <div>isAuthenticated: {String(isAuthenticated)}</div>
+      {error && <p className="error">{error.status} {error.message}</p>}
       <form onSubmit={handleSubmit}>
         <div>
           <label>Benutzername: </label>
           <input 
             type="text"
             value={username} 
-            onChange={e => setUsername(e.target.value)}
-            required 
+            onChange={e => {
+              setUsername(e.target.value)
+              dispatch(clearError())}}
+             
           />
         </div>
         <div>
@@ -50,8 +59,10 @@ function RegisterComponent() {
           <input 
             type="email" 
             value={email} 
-            onChange={e => setEmail(e.target.value)}
-            required 
+            onChange={e => {
+              setEmail(e.target.value)
+              dispatch(clearError())}}
+             
           />
         </div>
         <div>
@@ -59,8 +70,10 @@ function RegisterComponent() {
           <input 
             type="password" 
             value={password} 
-            onChange={e => setPassword(e.target.value)}
-            required 
+            onChange={e => {
+              setPassword(e.target.value)
+              dispatch(clearError())}}
+             
           />
         </div>
         <div>
@@ -68,8 +81,10 @@ function RegisterComponent() {
           <input 
             type="password" 
             value={passwordConfirmation} 
-            onChange={e => setPasswordConfirmation(e.target.value)}
-            required 
+            onChange={e => {
+              setPasswordConfirmation(e.target.value)
+              dispatch(clearError())}}
+             
           />
         </div>
         <div>

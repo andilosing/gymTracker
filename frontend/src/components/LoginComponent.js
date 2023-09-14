@@ -1,40 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../redux/actions/authActions';
+import { useNavigate } from 'react-router-dom';
+import { clearError } from '../redux/slices/authSlice';
 
 function LoginComponent() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const dispatch = useDispatch();
-  const { isAuthenticated, token, user } = useSelector(state => state.auth);
+  const navigate = useNavigate()
+  const { token, user, error } = useSelector(state => state.auth);
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (token && !error) {
+      setEmail("");
+      setPassword("");
+      navigate("/start");
+    }
+
+  
+  }, [token, error, navigate]);
+
+  useEffect(() => {
+    return () => {
+        dispatch(clearError());
+    }
+  }, [])
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     dispatch(loginUser({ email, password }));
   };
 
-  if (isAuthenticated) {
-    return (
-      <div>
-        <p>Sie sind eingeloggt!</p>
-        <p>Token: {token}</p>
-        <p>User: {user.username}</p> 
-      </div>
-    );
-  }
+
 
   return (
     <div>
       <h2>Login</h2>
-      <div>isAuthenticated: {String(isAuthenticated)}</div>
+       {error && <p className="error">{error.status} {error.message}</p>}
       <form onSubmit={handleSubmit}>
         <div>
           <label>Email: </label>
           <input 
             type="email" 
             value={email} 
-            onChange={e => setEmail(e.target.value)}
+            onChange={e => {
+              setEmail(e.target.value)
+              dispatch(clearError())}}
             required 
           />
         </div>
@@ -43,7 +56,9 @@ function LoginComponent() {
           <input 
             type="password" 
             value={password} 
-            onChange={e => setPassword(e.target.value)}
+            onChange={e => {
+              setPassword(e.target.value)
+              dispatch(clearError())}}
             required 
           />
         </div>

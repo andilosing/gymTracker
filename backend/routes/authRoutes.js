@@ -3,7 +3,7 @@ const router = express.Router()
 const AuthController = require('../controllers/authController')
 
 router.post('/register', AuthController.register)
-router.get("/resend-confirmation-email", AuthController.resendConfirmationEmail)
+router.post("/resend-confirmation-email", AuthController.resendConfirmationEmail)
 router.post("/confirm-email/:token", AuthController.confirmEmail)
 router.post("/login",AuthController.login)
 router.post("/logout", AuthController.logout)
