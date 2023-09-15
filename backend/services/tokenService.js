@@ -13,7 +13,7 @@ const generateAccessToken = (user) => {
             email_verified: user.email_verified,
             role: user.role
         }
-        const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: '15s' });  
+        const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: '15m' });  
         return accessToken;
     } catch (error) {
         console.error("Fehler beim Generieren des Access Tokens:", error);

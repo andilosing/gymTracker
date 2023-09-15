@@ -36,7 +36,7 @@ const deleteExerciseFromWorkout = async (id, workoutId) => {
         const { rows } = await db.query(query, values);
         
         if (!rows[0]) throw new NotFoundError('No exercise in workout found with the given ID.');
-        return rows[0];
+        return rows[0].id;
     } catch (error) {
         if (!error.customError) {
             throw new InternalServerError("Database error: Cannot delete exercise from workout");
@@ -45,9 +45,31 @@ const deleteExerciseFromWorkout = async (id, workoutId) => {
     }
 };
 
+const getAllExercisesFromWorkoutFromUser = async (userId) => {
+    try {
+        const query = `
+            SELECT we.id AS workout_exercise_id, 
+                   w.id AS workout_id, 
+                   COALESCE(ge.name, ce.name) AS exercise_name
+            FROM workouts w
+            LEFT JOIN workout_exercises we ON w.id = we.workout_id
+            LEFT JOIN global_exercises ge ON we.global_exercise_id = ge.id
+            LEFT JOIN custom_exercises ce ON we.user_exercise_id = ce.id
+            WHERE w.user_id = $1;
+        `;
+        const values = [userId];
+        const { rows } = await db.query(query, values);
+        return rows;
+    } catch (error) {
+        throw new InternalServerError("Database error: Cannot get user's exercises");
+    }
+};
+
+
 
 module.exports = {
     addExerciseToWorkout,
     getAllExercisesFromWorkout,
-    deleteExerciseFromWorkout
+    deleteExerciseFromWorkout,
+    getAllExercisesFromWorkoutFromUser
 };

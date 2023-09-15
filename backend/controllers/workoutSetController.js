@@ -78,8 +78,24 @@ const deleteSetFromExercise = async (req, res) => {
 
          
 
-        await workoutSetService.deleteSetFromExercise(id, exerciseId);
-        res.status(200).json({ message: 'Set from exercise deleted successfully' });
+        const deltedSetId = await workoutSetService.deleteSetFromExercise(id, exerciseId);
+        res.status(200).json(deltedSetId);
+    } catch (error) {
+        handleErrors(error, res);
+    }
+};
+
+const getAllSetsFromUser = async (req, res) => {
+    try {
+        const userId = req.user.id
+        
+
+        if(!userId ) {
+            throw new BadRequestError("user id is required")
+        }
+
+        const sets = await workoutSetService.getAllSetsFromUser(userId);
+        res.status(200).json(sets);
     } catch (error) {
         handleErrors(error, res);
     }
@@ -90,5 +106,6 @@ module.exports = {
     addSetToExercise,
     getAllSetsFromExercise,
     deleteSetFromExercise,
-    updateSetFromExercise
+    updateSetFromExercise,
+    getAllSetsFromUser
 };

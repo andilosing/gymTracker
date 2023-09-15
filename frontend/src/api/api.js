@@ -10,7 +10,7 @@ async function baseFetch(endpoint, options = {}, dispatch, getState) {
 
     const token = getState().auth.token
 
-    console.log(token)
+   
 
     const response = await fetch(`${BASE_URL}${endpoint}`, {
         ...options,
@@ -22,6 +22,8 @@ async function baseFetch(endpoint, options = {}, dispatch, getState) {
         credentials: 'include',
     });
 
+
+
     
 
     if (!response.ok) {
@@ -32,9 +34,7 @@ async function baseFetch(endpoint, options = {}, dispatch, getState) {
             status: response.status
         } //new Error(errorData.error || 'An error occurred');
     }
-
     
-
     return response.json();
 }
 
@@ -47,7 +47,6 @@ async function baseQueryWithReauth(endpoint, options = {}, dispatch, getState) {
         return  data ;
     } catch (error) {
         // Überprüfen Sie, ob der Fehler ein 403 ist
-        console.log(error)
         if (error.status === 403) {
             console.log('sending refresh token');
             
@@ -57,8 +56,6 @@ async function baseQueryWithReauth(endpoint, options = {}, dispatch, getState) {
                     ...options,
                     method: 'POST'},
                      dispatch, getState);
-
-                     console.log(refreshTokenData.accessToken)
                 
                 const user = getState().auth.user;
                 dispatch(setCredentials( {token: refreshTokenData.accessToken, user }));

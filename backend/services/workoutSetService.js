@@ -46,7 +46,8 @@ const updateSetFromExercise = async (id, exerciseId, reps, weight, set_number) =
 
 const deleteSetFromExercise = async (id, exerciseId) => {
     try {
-        await workoutSetMoel.deleteSetFromExercise(id, exerciseId);
+       const deletedSetId =  await workoutSetMoel.deleteSetFromExercise(id, exerciseId);
+       return deletedSetId
     } catch (error) {
         console.error(error)
         if (error.customError) {
@@ -57,10 +58,25 @@ const deleteSetFromExercise = async (id, exerciseId) => {
     }
 };
 
+const getAllSetsFromUser = async (userId) => {
+    try {
+        const sets = await workoutSetMoel.getAllSetsFromUser(userId);
+        return sets;
+    } catch (error) {
+        if (error.customError) {
+            throw error;
+        } else {
+            throw new InternalServerError("Error getting exercise sets");
+        }
+    }
+};
+
 
 module.exports = {
     addSetToExercise,
     getAllSetsFromExercise,
     deleteSetFromExercise,
-    updateSetFromExercise
+    updateSetFromExercise,
+    getAllSetsFromUser
+
 };

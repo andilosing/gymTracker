@@ -27,13 +27,27 @@ const getAllExercisesFromWorkout = async (workoutId) => {
     }
 };
 
+const getAllExercisesFromWorkoutFromUser = async (userId) => {
+    try {
+        const exercises = await workoutExerciseModel.getAllExercisesFromWorkoutFromUser(userId);
+        return exercises;
+    } catch (error) {
+        if (error.customError) {
+            throw error;
+        } else {
+            throw new InternalServerError("Error getting workout exercises");
+        }
+    }
+};
+
 
 
 
 
 const deleteExerciseFromWorkout = async (id, workoutId) => {
     try {
-        await workoutExerciseModel.deleteExerciseFromWorkout(id, workoutId);
+        const deletedId = await workoutExerciseModel.deleteExerciseFromWorkout(id, workoutId);
+        return deletedId
     } catch (error) {
         if (error.customError) {
             throw error;
@@ -47,5 +61,6 @@ const deleteExerciseFromWorkout = async (id, workoutId) => {
 module.exports = {
     addExerciseToWorkout,
     getAllExercisesFromWorkout,
-    deleteExerciseFromWorkout
+    deleteExerciseFromWorkout,
+    getAllExercisesFromWorkoutFromUser
 };

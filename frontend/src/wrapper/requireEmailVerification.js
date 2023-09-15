@@ -1,4 +1,4 @@
-import { useLocation, Navigate, Outlet } from "react-router-dom"
+import { useLocation, useNavigate, Navigate, Outlet } from "react-router-dom"
 import { useSelector, useDispatch } from "react-redux"
 import { resendConfirmationEmail } from "../redux/actions/authActions"
 import { useEffect } from 'react';
@@ -10,6 +10,8 @@ const RequireEmailConfirmation = () => {
 
     const { user } = useSelector(state => state.auth);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const { resendEmailStatus, error } = useSelector(state => state.auth);
 
     useEffect(() => {
@@ -34,6 +36,11 @@ const RequireEmailConfirmation = () => {
         }
       }
 
+      const goToLogin = () => {
+        console.log("ich wurde aufgerufen")
+        navigate("/login");
+      }
+
     
 
     return (
@@ -49,7 +56,7 @@ const RequireEmailConfirmation = () => {
             {resendEmailStatus && resendEmailStatus ? <div>  E-Mail wurde erfolgreich zugestellt  </div> :<></> }
 
             <div>
-                Email Adresse bereits bestätigt?  <Link to="/login">Hier zu Login</Link>
+                Email Adresse bereits bestätigt?   <Link to="/"> Hier zum Login </Link>
             </div>
             </div> }
             

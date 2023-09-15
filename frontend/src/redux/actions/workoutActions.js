@@ -1,8 +1,8 @@
 
-import { setWorkouts, setError } from '../slices/workoutSlice';
+import { setWorkoutHistory, setError } from '../slices/workoutSlice';
 import { baseQueryWithReauth } from '../../api/api';
 
-export const fetchWorkouts = () => {
+export const fetchWorkoutsHistory = () => {
     return async (dispatch, getState) => {
         try {
             const options = {
@@ -10,9 +10,10 @@ export const fetchWorkouts = () => {
             };
 
             const data = await baseQueryWithReauth("/workouts", options, dispatch, getState);
+            console.log("abgerufende workout: ", data)
 
             if (Array.isArray(data)) { 
-                dispatch(setWorkouts(data));
+                dispatch(setWorkoutHistory(data));
             } else {
                 dispatch(setError({status: "Error", message: "Data is not in expected format" }));
             }

@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialExercisesState = {
-  exercises: [],
+  workoutExercisesHistory: [],
   error: null
 };
 
@@ -12,14 +12,20 @@ const exercisesSlice = createSlice({
     fetchData: (state) => {
       // Hier würden Sie den tatsächlichen Fetch-Aufruf einfügen.
     },
-    setExercises: (state, action) => {
-      state.exercises = action.payload;
+    setWorkoutExercisesHistory: (state, action) => {
+      state.workoutExercisesHistory = action.payload;
+    },
+    removeExercise: (state, action) => {
+      state.workoutExercisesHistory = state.workoutExercisesHistory.filter(exercise => exercise.workout_exercise_id !== action.payload);
     },
     setError: (state, action) => {
       state.error = action.payload;
+    },
+    clearError: (state) => {
+      state.error = null
     }
   }
 });
 
-export const { fetchData, setExercises, setError } = exercisesSlice.actions;
+export const { fetchData, setWorkoutExercisesHistory, setError, clearError, removeExercise } = exercisesSlice.actions;
 export default exercisesSlice.reducer;

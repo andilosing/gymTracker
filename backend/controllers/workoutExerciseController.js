@@ -39,6 +39,23 @@ const getAllExercisesFromWorkout = async (req, res) => {
     }
 };
 
+const getAllExercisesFromWorkoutFromUser = async (req, res) => {
+    try {
+        const userId = req.user.id
+
+     
+
+        if(!userId ) {
+            throw new BadRequestError("workout id is required")
+        }
+
+        const exercises = await workoutExerciseService.getAllExercisesFromWorkoutFromUser(userId);
+        res.status(200).json(exercises);
+    } catch (error) {
+        handleErrors(error, res);
+    }
+};
+
 
 
 
@@ -52,8 +69,9 @@ const deleteExerciseFromWorkout = async (req, res) => {
             throw new BadRequestError("workout id, exercise Id and user id are required.");
         }
 
-        await workoutExerciseService.deleteExerciseFromWorkout(id, workoutId);
-        res.status(200).json({ message: 'Exercise from Workout deleted successfully' });
+        const deletedId = await workoutExerciseService.deleteExerciseFromWorkout(id, workoutId);
+        console.log(deletedId)
+        res.status(200).json(deletedId);
     } catch (error) {
         handleErrors(error, res);
     }
@@ -63,5 +81,6 @@ const deleteExerciseFromWorkout = async (req, res) => {
 module.exports = {
     addExerciseToWorkout,
     getAllExercisesFromWorkout,
-    deleteExerciseFromWorkout
+    deleteExerciseFromWorkout,
+    getAllExercisesFromWorkoutFromUser
 };

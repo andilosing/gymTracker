@@ -44,7 +44,7 @@ const editExercise = async (id, name, userId) => {
 
 const deleteExercise = async (id, userId) => {
     try {
-        await customExercisesModel.deleteExercise(id, userId);
+       const deletedId = await customExercisesModel.deleteExercise(id, userId);
     } catch (error) {
         if (error.customError) {
             throw error;

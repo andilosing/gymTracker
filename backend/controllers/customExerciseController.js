@@ -66,8 +66,8 @@ const deleteExercise = async (req, res) => {
             throw new BadRequestError("Both Id and userId field is required.");
         }
 
-        await customExercisesService.deleteExercise(id, userId);
-        res.status(200).json({ message: 'Exercise deleted successfully' });
+        const deletedId = await customExercisesService.deleteExercise(id, userId);
+        res.status(200).json(deletedId);
     } catch (error) {
         handleErrors(error, res);
     }

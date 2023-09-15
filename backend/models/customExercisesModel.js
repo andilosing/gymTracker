@@ -50,7 +50,7 @@ const deleteExercise = async (id, userId) => {
         const values = [id, userId];
         const { rows } = await db.query(query, values);
         if (!rows[0]) throw new NotFoundError('No exercise found with the given ID.');
-        return rows[0];
+        return rows[0].id;
     } catch (error) {
         if (!error.customError) {
             throw new InternalServerError("Database error: Cannot delete exercise");

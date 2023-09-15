@@ -5,5 +5,6 @@ const workoutsExerciseController = require('../controllers/workoutExerciseContro
 router.post("/", workoutsExerciseController.addExerciseToWorkout)
 router.delete("/:id", workoutsExerciseController.deleteExerciseFromWorkout)
 router.get("/", workoutsExerciseController.getAllExercisesFromWorkout)
+router.get("/all", workoutsExerciseController.getAllExercisesFromWorkoutFromUser)
 
 module.exports = router;

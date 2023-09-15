@@ -54,11 +54,40 @@ const deleteSetFromExercise = async (id, exerciseId) => {
         const { rows } = await db.query(query, values);
         
         if (!rows[0]) throw new NotFoundError('No set in in exercise found with the given ID.');
-        return rows[0];
+        return rows[0].id;
+        
     } catch (error) {
         if (!error.customError) {
             throw new InternalServerError("Database error: Cannot delete set from exercise");
         }
+        throw error;
+    }
+};
+
+const getAllSetsFromUser = async (userId) => {
+    try {
+        const query = `
+        SELECT 
+            workout_sets.id AS set_id,
+            workout_sets.reps,
+            workout_sets.weight,
+            workout_sets.set_number,
+            workout_sets.workout_exercise_id
+        FROM 
+            users
+        JOIN
+            workouts ON users.id = workouts.user_id
+        JOIN
+            workout_exercises ON workouts.id = workout_exercises.workout_id
+        JOIN
+            workout_sets ON workout_exercises.id = workout_sets.workout_exercise_id
+        WHERE
+            users.id = $1;
+        `;
+        const result = await db.query(query, [userId]);
+        return result.rows;
+    } catch (error) {
+        console.error('Fehler beim Abrufen der Sets für den Benutzer:', error);
         throw error;
     }
 };
@@ -68,5 +97,6 @@ module.exports = {
     addSetToExercise,
     getAllSetsFromExercise,
     deleteSetFromExercise,
-    updateSetFromExercise
+    updateSetFromExercise,
+    getAllSetsFromUser
 };
