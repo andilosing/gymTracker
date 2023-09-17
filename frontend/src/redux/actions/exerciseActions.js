@@ -1,4 +1,4 @@
-import { setWorkoutExercisesHistory, setError, removeExercise } from '../slices/exerciseSlice';
+import { setWorkoutExercisesHistory, setError, removeExercise, setCustomExercises, setGlobalExercises } from '../slices/exerciseSlice';
 import { baseQueryWithReauth } from '../../api/api';
 
 export const fetchExercisesWorkoutHistory = () => {
@@ -44,3 +44,48 @@ export const deleteExerciseFromWorkout = (workoutId, exerciseId) => {
     }
   };
 };
+
+export const fetchGlobalExercises = () => {
+  return async (dispatch, getState) => {
+      try {
+          const options = {
+              method: 'GET',
+          };
+
+          const globalExercises = await baseQueryWithReauth(`/global-exercise/list`, options, dispatch, getState);
+          console.log("Abgerufene globale Übungen:", globalExercises);
+
+          if (Array.isArray(globalExercises)) {
+              dispatch(setGlobalExercises(globalExercises));
+          } else {
+              dispatch(setError({ status: 'Error', message: 'Daten sind nicht im erwarteten Format' }));
+          }
+      } catch (error) {
+          console.error('Fehler beim Abrufen von globalen Übungen:', error);
+          dispatch(setError({ status: error.status, message: error.message }));
+      }
+  };
+};
+
+export const fetchCustomExercises = () => {
+  return async (dispatch, getState) => {
+      try {
+          const options = {
+              method: 'GET',
+          };
+
+          const customExercises = await baseQueryWithReauth(`/custom-exercise/list`, options, dispatch, getState);
+          console.log("Abgerufene benutzerdefinierte Übungen:", customExercises);
+
+          if (Array.isArray(customExercises)) {
+              dispatch(setCustomExercises(customExercises));
+          } else {
+              dispatch(setError({ status: 'Error', message: 'Daten sind nicht im erwarteten Format' }));
+          }
+      } catch (error) {
+          console.error('Fehler beim Abrufen von benutzerdefinierten Übungen:', error);
+          dispatch(setError({ status: error.status, message: error.message }));
+      }
+  };
+};
+

@@ -61,6 +61,8 @@ const deleteExercise = async (req, res) => {
 };
 
 
+
+
 module.exports = {
     addExercise,
     listExercises,

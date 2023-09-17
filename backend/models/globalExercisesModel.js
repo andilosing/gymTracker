@@ -18,7 +18,7 @@ const createExercise = async (name) => {
 
 const findAllExercises = async () => {
     try {
-        const query = `SELECT * FROM global_exercises`;
+        const query = `SELECT *,  'global' AS type FROM global_exercises`;
         const { rows } = await db.query(query);
         return rows;
     } catch (error) {

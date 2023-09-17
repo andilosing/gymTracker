@@ -6,6 +6,8 @@ import RegisterComponent from './components/RegisterComponent';
 import RequireEmailConfirmation from './wrapper/requireEmailVerification';
 import RequireAuth from './wrapper/requireAuthToken';
 import WorkoutHistoryComponent from './components/WorkoutHistoryComponent';
+import ExerciseListComponent from './components/ExerciseListComponent';
+import CurrentWorkoutComponent from './components/CurrentWorkoutComponent';
 
 
 function App() {
@@ -18,6 +20,10 @@ function App() {
         <Route element={<RequireAuth />}>
           <Route element={<RequireEmailConfirmation />}>
             <Route path='/workouts' element={ <WorkoutHistoryComponent />} />
+            <Route path='/exercise-list' element={ <ExerciseListComponent />} />
+            <Route path='/current-workout' element={ <CurrentWorkoutComponent />} />
+
+
             
           </Route>
         </Route>
