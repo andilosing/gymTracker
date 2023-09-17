@@ -15,6 +15,14 @@ function CurrentWorkoutComponent() {
     const currentSets = useSelector(state => state.sets.currentWorkoutSets);
 
 
+    //predifned sets
+    const setsWorkoutHistory = useSelector(state => state.sets.setsWorkoutHistory)
+    const globalExercises = useSelector(state => state.exercises.globalExercisesList);
+    const customExercises = useSelector(state => state.exercises.customExercisesList);
+    const exercisesWorkoutHistory = useSelector(state => state.exercises.workoutExercisesHistory);
+
+
+
     const generateId = () => Date.now().toString() + Math.random().toString(36).substr(2, 5);
 
 
@@ -46,6 +54,12 @@ function CurrentWorkoutComponent() {
 
     const handleExerciseSelected = (exercise) => {
         const isExerciseAlreadyAdded = currentWorkoutExercises.some(e => e.id === exercise.id);
+
+
+        //predefined sets
+        const lastSets = getLastSetsForExercise(exercise.id, exercise.type);
+
+       
     
         if (isExerciseAlreadyAdded) {
             console.log("Übung bereits hinzugefügt! "); //hier ein error werfen und behandeln
@@ -55,10 +69,19 @@ function CurrentWorkoutComponent() {
         dispatch(addExerciseToCurrentWorkout(exercise));
     
         for (let i = 0; i < 3; i++) {
+            let defaultReps = 0;
+            let defaultWeight = 0;
+    
+            if (lastSets[i]) {
+                defaultReps = lastSets[i].reps;
+                defaultWeight = lastSets[i].weight;
+            }
+
+
             dispatch(addSetToCurrentWorkout({
                 id: generateId(),
-                reps: 0, 
-                weight: 0, 
+                reps: defaultReps, 
+                weight: defaultWeight, 
                 set_number: i + 1, 
                 exerciseId: exercise.id
             }));
@@ -82,13 +105,26 @@ function CurrentWorkoutComponent() {
     };
 
 
-    const handleAddSetClick = (exerciseId) => {
+    const handleAddSetClick = (exerciseId, exerciseType) => {
         const filteredSets = currentSets.filter(set => set.exerciseId === exerciseId);
         const maxSetNumber = filteredSets.reduce((max, set) => Math.max(max, set.set_number), 0)
+        
+        const lastSets = getLastSetsForExercise(exerciseId, exerciseType); // Füge den entsprechenden Übungstyp hinzu, wenn benötigt
+        
+        let defaultReps = 0;
+        let defaultWeight = 0;
+    
+        // Überprüfen, ob der nächste Satz in lastSets vorhanden ist
+        const matchingLastSet = lastSets.find(set => set.set_number === maxSetNumber + 1);
+        if (matchingLastSet) {
+            defaultReps = matchingLastSet.reps;
+            defaultWeight = matchingLastSet.weight;
+        }
+    
         dispatch(addSetToCurrentWorkout({
             id: generateId(),
-            reps: 0, 
-            weight: 0, 
+            reps: defaultReps, 
+            weight: defaultWeight, 
             set_number: maxSetNumber + 1, 
             exerciseId: exerciseId
         }));
@@ -119,6 +155,52 @@ function CurrentWorkoutComponent() {
         setWorkoutDuration(0);
     };
 
+
+
+// predifine sets 
+    const getLastSetsForExercise = (exerciseId, exerciseType) => {
+        // Filtern Sie die Sätze basierend auf der exerciseId
+
+        //exerciseid und set_workout_exercise id sind zwei verschiedene sachen
+
+       
+
+
+        let validExercises = [];
+    
+        if (exerciseType === "global") {
+            validExercises = globalExercises;
+        } else if (exerciseType === "custom") {
+            validExercises = customExercises;
+        }
+
+       
+
+        // Überprüfen, ob die exerciseId in der validExercises Liste ist
+        if (!validExercises.some(exercise => exercise.id === exerciseId)) {
+            console.log(`The given exerciseId does not match any ${exerciseType} exercises.`);
+            return [];
+        }
+
+        const matchingExercises = exercisesWorkoutHistory.filter(exercise => exercise.global_exercise_id === exerciseId);
+
+        const workout_exercise_id = matchingExercises.map(exercise => exercise.workout_exercise_id);
+
+       
+
+         // Finden der höchsten workout_exercise_id
+        const maxWorkoutExerciseId = Math.max(...workout_exercise_id);
+
+    
+
+        // Filtern der Sätze, die der höchsten workout_exercise_id entsprechen
+        const latestSets = setsWorkoutHistory.filter(set => set.workout_exercise_id === maxWorkoutExerciseId);
+
+      
+        return latestSets;
+    };
+    
+
     return (
         <div>
             {!currentWorkout ? (
@@ -146,7 +228,7 @@ function CurrentWorkoutComponent() {
                                 </li>
                             ))}
                         </ul>
-                        <button onClick={() => handleAddSetClick(exercise.id)}>Set hinzufügen</button>
+                        <button onClick={() => handleAddSetClick(exercise.id, exercise.type)}>Set hinzufügen</button>
                     </li>
                 ))}
             </ul>

@@ -49,7 +49,9 @@ const getAllExercisesFromWorkoutFromUser = async (userId) => {
     try {
         const query = `
             SELECT we.id AS workout_exercise_id, 
-                   w.id AS workout_id, 
+                   w.id AS workout_id,
+                   ge.id AS global_exercise_id,
+                   ce.id AS user_exercise_id,
                    COALESCE(ge.name, ce.name) AS exercise_name
             FROM workouts w
             LEFT JOIN workout_exercises we ON w.id = we.workout_id
@@ -61,9 +63,11 @@ const getAllExercisesFromWorkoutFromUser = async (userId) => {
         const { rows } = await db.query(query, values);
         return rows;
     } catch (error) {
+        console.error(error)
         throw new InternalServerError("Database error: Cannot get user's exercises");
     }
 };
+
 
 
 

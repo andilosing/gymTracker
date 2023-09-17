@@ -11,6 +11,8 @@ const WorkoutHistoryComponent = () => {
   const sets = useSelector((state) => state.sets.setsWorkoutHistory)
   const { error } = useSelector(state => state.workouts);
 
+  console.log("exercises", exercises)
+
   useEffect(() => {
     if (!workouts || !workouts.length) {
         console.log("dispatch workouts laden")
@@ -55,6 +57,8 @@ const WorkoutHistoryComponent = () => {
                 .map((exercise) => (
                   <li key={exercise.workout_exercise_id}>
                     {exercise.exercise_name}
+                    global exercise {exercise.global_exercise_id}
+                    user exercise {exercise.user_exercise_id}
                     
                     {/* Button anzeigen, wenn es tatsächlich eine Übung gibt */}
                     {exercise.workout_exercise_id && (
