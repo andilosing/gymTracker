@@ -10,11 +10,11 @@ const workoutsSlice = createSlice({
   name: 'workouts',
   initialState: initialWorkoutsState,
   reducers: {
-    fetchData: (state) => {
-      // Hier würden Sie den tatsächlichen Fetch-Aufruf einfügen.
+    fetchData: (state, action) => {
+      state.workoutHistory = action.payload;
     },
     setWorkoutHistory: (state, action) => {
-      state.workoutHistory = action.payload;
+      state.workoutHistory = [...state.workoutHistory, action.payload];
     },
 
 
@@ -24,7 +24,7 @@ const workoutsSlice = createSlice({
         startTime: action.payload.startTime  // setzt die Startzeit des aktuellen Workouts
       };
     },
-    endWorkout: (state) => {
+    endWorkoutSlice: (state) => {
       state.currentWorkout = null;  // setzt das aktuelle Workout auf null
     },
 
@@ -33,9 +33,13 @@ const workoutsSlice = createSlice({
     },
     clearError: (state) => {
       state.error = null
-    }
+    }, 
+
+    addWorkoutToHistory : (state, action ) => {
+      state.workoutHistory = [...state.workoutHistory, action.payload];
+    },
   }
 });
 
-export const { fetchData, setWorkoutHistory, setError, clearError, startWorkout, endWorkout, } = workoutsSlice.actions;
+export const { fetchData, setWorkoutHistory, setError, clearError, startWorkout, endWorkoutSlice, addWorkoutToHistory } = workoutsSlice.actions;
 export default workoutsSlice.reducer;

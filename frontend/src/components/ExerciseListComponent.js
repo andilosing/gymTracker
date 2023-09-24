@@ -32,16 +32,28 @@ function ExerciseListComponent({ onExerciseSelected, addedExercises }) {
     availableExercises.sort((a, b) => a.name.localeCompare(b.name));
 
     return (
-        <div className="exercise-list-container">
-            <h2>Übungsliste</h2>
-            <ul>
+        <div className="bg-gray-800 min-h-screen px-4 py-6 text-white">
+            <h2 className="text-2xl font-bold mb-6">Übungsliste</h2>
+            <ul className="space-y-4">
                 {availableExercises.map(exercise => (
-                    <li key={exercise.id}>
-                        {exercise.name} - {exercise.type}
-                        <button onClick={() => onExerciseSelected(exercise)}>Auswählen</button>
-                        {exercise.type === 'custom' && (
-                            <button>Edit Custom Exercise</button>
-                        )}
+                    <li key={exercise.id} className="bg-gray-700 shadow-md rounded-md p-4 flex justify-between items-center">
+                        <div>
+                            <p className="font-medium">{exercise.name}</p>
+                            <p className="text-sm">{exercise.type}</p>
+                        </div>
+                        <div className="space-x-2">
+                            <button 
+                                onClick={() => onExerciseSelected(exercise)}
+                                className="btn btn-primary btn-sm"
+                            >
+                                Auswählen
+                            </button>
+                            {exercise.type === 'custom' && (
+                                <button className="btn btn-secondary btn-sm">
+                                    Edit Custom Exercise
+                                </button>
+                            )}
+                        </div>
                     </li>
                 ))}
             </ul>

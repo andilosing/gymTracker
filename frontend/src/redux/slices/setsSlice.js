@@ -10,21 +10,31 @@ const setsSlice = createSlice({
   name: 'sets',
   initialState: initialSetsState,
   reducers: {
-    fetchData: (state) => {
-      // Hier würden Sie den tatsächlichen Fetch-Aufruf einfügen.
-    },
-    setSetsWorkoutHistory: (state, action) => {
+    fetchData: (state, action) => {
       state.setsWorkoutHistory = action.payload;
     },
+    setSetsWorkoutHistory: (state, action) => {
+      console.log("set in slice hinzugügen: ", action.payload)
+      state.setsWorkoutHistory.push(action.payload)
+      //= [...state.setsWorkoutHistory, action.payload];
+      console.log("state workout set history: ", state.setsWorkoutHistory);
+
+
+
+    },
+
+    
     removeSet: (state, action) => {
       state.setsWorkoutHistory = state.setsWorkoutHistory.filter(set => set.set_id !== action.payload);
     },    
 
     addSetToCurrentWorkout: (state, action) => {
       state.currentWorkoutSets.push(action.payload);
-    },
+    
+    }, 
     removeSetFromCurrentWorkout: (state, action) => {
         state.currentWorkoutSets = state.currentWorkoutSets.filter(set => set.id !== action.payload);
+        console.log("removed set: ", state.currentWorkoutSets)
     },
     decrementSetNumber: (state, action) => {
       const setToDecrement = state.currentWorkoutSets.find(set => set.id === action.payload);
@@ -32,6 +42,71 @@ const setsSlice = createSlice({
         setToDecrement.set_number -= 1;
       }
     },
+    updateSetInCurrentWorkout: (state, action) => {
+      console.log("ich wurde geklickt: ")
+      const setIndex = state.currentWorkoutSets.findIndex(set => set.id === action.payload.id);
+      if (setIndex !== -1) {
+        const currentSet = state.currentWorkoutSets[setIndex];
+        const updatedSet = { ...currentSet };
+    
+         // Aktualisiere `reps`, falls vorhanden, sonst setze es auf einen leeren Wert (z.B. null)
+         updatedSet.reps = action.payload.hasOwnProperty("reps") ? action.payload.reps : null;
+
+        // Aktualisiere `weight`, falls vorhanden, sonst setze es auf einen leeren Wert (z.B. null)
+          updatedSet.weight = action.payload.hasOwnProperty("weight") ? action.payload.weight : null;
+        
+        // Wenn Sie auch das isLocked-Feld aktualisieren möchten:
+        if (action.payload.hasOwnProperty("isLocked")) {
+          updatedSet.isLocked = action.payload.isLocked;
+        }
+    
+        // Aktualisieren Sie die ID, wenn sie im payload vorhanden ist
+        if (action.payload.hasOwnProperty("id")) {
+          updatedSet.id = action.payload.id;
+        }
+    
+        state.currentWorkoutSets = [
+          ...state.currentWorkoutSets.slice(0, setIndex),
+          updatedSet,
+          ...state.currentWorkoutSets.slice(setIndex + 1),
+        ];
+    
+        console.log("nach update: ", state.currentWorkoutSets);
+      }
+    },
+    updateSpecificSetValues: (state, action) => {
+   
+
+      console.log("ich wurde geklickt: ")
+      const setIndex = state.currentWorkoutSets.findIndex(set => set.id === action.payload.id);
+      if (setIndex !== -1) {
+        const currentSet = state.currentWorkoutSets[setIndex];
+        const updatedSet = { ...currentSet };
+    
+        // Überprüfen Sie, ob reps oder weight im payload sind und aktualisieren Sie sie
+        if (action.payload.hasOwnProperty("reps")) {
+          updatedSet.reps = action.payload.reps;
+        }
+        if (action.payload.hasOwnProperty("weight")) {
+          updatedSet.weight = action.payload.weight;
+        }
+
+        
+        
+    
+        state.currentWorkoutSets = [
+          ...state.currentWorkoutSets.slice(0, setIndex),
+          updatedSet,
+          ...state.currentWorkoutSets.slice(setIndex + 1),
+        ];
+    
+        console.log("nach update: ", state.currentWorkoutSets);
+      }
+    },resetCurrentWorkoutSets: (state) => {
+      state.currentWorkoutSets = [];
+    },
+    
+    
 
 
 
@@ -44,5 +119,5 @@ const setsSlice = createSlice({
   }
 });
 
-export const { fetchData, setSetsWorkoutHistory, setError, clearError, removeSet, addSetToCurrentWorkout, removeSetFromCurrentWorkout, decrementSetNumber } = setsSlice.actions;
+export const { fetchData, setSetsWorkoutHistory, resetCurrentWorkoutSets, setError, clearError, removeSet, addSetToCurrentWorkout, updateSpecificSetValues, removeSetFromCurrentWorkout, decrementSetNumber, updateSetInCurrentWorkout} = setsSlice.actions;
 export default setsSlice.reducer;

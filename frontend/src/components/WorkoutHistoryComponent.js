@@ -8,28 +8,28 @@ const WorkoutHistoryComponent = () => {
   const dispatch = useDispatch();
   const workouts = useSelector(state => state.workouts.workoutHistory);
   const exercises = useSelector(state => state.exercises.workoutExercisesHistory);
+  
   const sets = useSelector((state) => state.sets.setsWorkoutHistory)
   const { error } = useSelector(state => state.workouts);
 
-  console.log("exercises", exercises)
+  console.log('Current history exercises:', exercises);
+  console.log("wokrouts in hisory: ", workouts)
+  console.log("sets in workout history: " , sets)
 
   useEffect(() => {
     if (!workouts || !workouts.length) {
-        console.log("dispatch workouts laden")
       dispatch(fetchWorkoutsHistory());
     }
   }, []); //dispatch, workouts
   
   useEffect(() => {
     if (!exercises || !exercises.length) {
-      console.log("dispatch exercises laden");
       dispatch(fetchExercisesWorkoutHistory());
     }
   }, []); //dispatch, exercises
   
   useEffect(() => {
     if (!sets || !sets.length) {
-      console.log("dispatch sets laden");
       dispatch(fetchSetsHistory());
     }
   }, []); //dispatch, sets
@@ -42,49 +42,69 @@ const WorkoutHistoryComponent = () => {
     dispatch(deleteExerciseFromWorkout(workoutId, exerciseId));
   };
 
-  return (
-    <div>
-      {error && <p className="error">{error.status} {error.message}</p>}
-      <ul>
-      {workouts.map(workout => (
-        <li key={workout.id}>
-          {workout.id} {workout.duration}
-          <div>
-            <h2>Übungen</h2>
-            <ul>
-              {exercises
-                .filter(exercise => exercise.workout_id === workout.id)
-                .map((exercise) => (
-                  <li key={exercise.workout_exercise_id}>
-                    {exercise.exercise_name}
-                    global exercise {exercise.global_exercise_id}
-                    user exercise {exercise.user_exercise_id}
                     
-                    {/* Button anzeigen, wenn es tatsächlich eine Übung gibt */}
-                    {exercise.workout_exercise_id && (
-                      <button onClick={() => handleDeleteExercise(workout.id, exercise.workout_exercise_id)}>Übung Löschen</button>
-                    )}
 
-                    <div>
-                      <h3>Sets</h3>
-                      <ul>
-                        {sets
-                            .filter(set => set.workout_exercise_id === exercise.workout_exercise_id)
-                            .map((set) => (
-                              <li key={set.set_id}>
-                                Id: {set.set_number} Reps: {set.reps}, Gewicht: {set.weight}
-                                <button onClick={() => handleDeleteSet(workout.id, exercise.workout_exercise_id, set.set_id)}>Set Löschen</button>
-                              </li>
-                          ))}
-                      </ul>
-                    </div>
-
-                  </li>
-              ))}
-            </ul>
-          </div>
-        </li>
-      ))}
+  return (
+    <div className="bg-gray-800 min-h-screen px-4 py-6 text-white">
+      {error && <p className="error bg-red-500 p-4 rounded-md">{error.status} {error.message}</p>}
+      
+      <ul className="space-y-4">
+        {workouts.map(workout => (
+          <li key={workout.id} className="bg-gray-700 shadow-md rounded-md p-4">
+            <details>
+              <summary className="flex justify-between items-center font-medium text-xl mb-2">
+                {workout.id} <span>{workout.duration}</span>
+              </summary>
+  
+              <div className="space-y-4">
+                <h2 className="text-lg font-semibold">Übungen</h2>
+  
+                <ul className="space-y-2">
+                  {exercises
+                    .filter(exercise => exercise.workout_id === workout.id)
+                    .map((exercise) => (
+                      <li key={exercise.workout_exercise_id} className="flex flex-col space-y-2">
+                        <span>{exercise.exercise_name}</span>
+                        <div className="flex space-x-4 text-sm">
+                          <span>global exercise {exercise.global_exercise_id}</span>
+                          <span>user exercise {exercise.user_exercise_id}</span>
+                        </div>
+  
+                        {/* Button anzeigen, wenn es tatsächlich eine Übung gibt */}
+                        {exercise.workout_exercise_id && (
+                          <button 
+                            onClick={() => handleDeleteExercise(workout.id, exercise.workout_exercise_id)}
+                            className="btn btn-error btn-sm"
+                          >
+                            Übung Löschen
+                          </button>
+                        )}
+  
+                        <div className="mt-4">
+                          <h3 className="text-md font-medium">Sets</h3>
+                          <ul className="space-y-2 mt-2">
+                            {sets
+                                .filter(set => set.workout_exercise_id === exercise.workout_exercise_id)
+                                .map((set) => (
+                                  <li key={set.set_id} className="flex justify-between items-center text-sm">
+                                    <span>Id: {set.set_number} Reps: {set.reps}, Gewicht: {set.weight}</span>
+                                    <button 
+                                      onClick={() => handleDeleteSet(workout.id, exercise.workout_exercise_id, set.set_id)}
+                                      className="btn btn-error btn-sm"
+                                    >
+                                      Set Löschen
+                                    </button>
+                                  </li>
+                              ))}
+                          </ul>
+                        </div>
+                      </li>
+                  ))}
+                </ul>
+              </div>
+            </details>
+          </li>
+        ))}
       </ul>
     </div>
   );

@@ -6,6 +6,8 @@ const addSetToExercise = async (req, res) => {
     try {
         const exerciseId = req.params.exerciseId
         const { reps, weight, set_number } = req.body
+
+
         
 
         if (!exerciseId ) {

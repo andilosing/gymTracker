@@ -9,6 +9,7 @@ const addSetToExercise = async (exerciseId, reps, weight, set_number) => {
         if (!rows[0]) throw new NotFoundError('No set to exercise added.');
         return rows[0];
     } catch (error) {
+        console.log(error)
         if (!error.customError) {
             console.error(error)
             throw new InternalServerError("Database error: Cannot add set to exercise");

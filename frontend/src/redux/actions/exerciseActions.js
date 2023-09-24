@@ -1,4 +1,4 @@
-import { setWorkoutExercisesHistory, setError, removeExercise, setCustomExercises, setGlobalExercises } from '../slices/exerciseSlice';
+import { fetchData, setWorkoutExercisesHistory, setError, removeExercise, setCustomExercises, setGlobalExercises } from '../slices/exerciseSlice';
 import { baseQueryWithReauth } from '../../api/api';
 
 export const fetchExercisesWorkoutHistory = () => {
@@ -12,7 +12,7 @@ export const fetchExercisesWorkoutHistory = () => {
       console.log("abgerufende exercises: ", exercises)
 
       if (Array.isArray(exercises)) {
-        dispatch(setWorkoutExercisesHistory(exercises));
+        dispatch(fetchData(exercises));
       } else {
         dispatch(setError({ status: 'Error', message: 'Daten sind nicht im erwarteten Format' }));
       }
@@ -88,4 +88,51 @@ export const fetchCustomExercises = () => {
       }
   };
 };
+
+export const addExerciseToWorkout = (workoutId, exerciseType, exerciseId) => {
+  return async (dispatch, getState) => {
+    try {
+      let exerciseData = {};
+
+      if (exerciseType === 'global') {
+        exerciseData = {
+          globalExerciseId: exerciseId
+        };
+      } else if (exerciseType === 'custom') {
+        exerciseData = {
+          customExerciseId: exerciseId
+        };
+      } else {
+        throw new Error('Unbekannter Übungstyp.');
+      }
+
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(exerciseData)
+      };
+
+      const response = await baseQueryWithReauth(`/workouts/${workoutId}/exercises/`, options, dispatch, getState);
+      console.log("Hinzugefügte Übung:", response);
+      console.log("Hinzugefügt exercise id: ", response.id)
+
+      if (response && response.id) { 
+        response.workout_exercise_id = response.id
+        delete response.id
+
+        dispatch(setWorkoutExercisesHistory(response));
+        return response
+      } else {
+        console.log("response error: ? ", response)
+        throw new Error('Fehler beim Hinzufügen der Übung zum Workout.');
+      }
+    } catch (error) {
+      console.error('Fehler beim Hinzufügen der Übung zum Workout:', error);
+      dispatch(setError({ status: error.status || 'Error', message: error.message }));
+    }
+  };
+};
+
 

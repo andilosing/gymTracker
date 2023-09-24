@@ -1,5 +1,8 @@
 import { loginSuccess, registerSuccess, logout, resendEmailFailure, resendEmailSuccess, setError,clearError } from '../slices/authSlice';
 import { baseQueryWithReauth,  } from '../../api/api';
+import { useNavigate} from 'react-router-dom';
+
+
 
 
 export const loginUser = (credentials) => {
@@ -65,6 +68,12 @@ export const resendConfirmationEmail = (email) => {
         }
     };
 };
+
+export const handleLogoutNavigation = () => {
+   
+}
+
+
 
 
 

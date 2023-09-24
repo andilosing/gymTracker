@@ -12,14 +12,17 @@ const exercisesSlice = createSlice({
   name: 'exercises',
   initialState: initialExercisesState,
   reducers: {
-    fetchData: (state) => {
-      
+    fetchData: (state, action) => {
+      state.workoutExercisesHistory =  action.payload;
     },
     setWorkoutExercisesHistory: (state, action) => {
-      state.workoutExercisesHistory = action.payload;
-    },
+      state.workoutExercisesHistory = [...state.workoutExercisesHistory, action.payload];
+  },
     removeExercise: (state, action) => {
       state.workoutExercisesHistory = state.workoutExercisesHistory.filter(exercise => exercise.workout_exercise_id !== action.payload);
+    },
+    resetCurrentWorkoutExercises: (state) => {
+      state.currentWorkoutExercises = [];
     },
 
 
@@ -52,5 +55,5 @@ const exercisesSlice = createSlice({
   }
 });
 
-export const { fetchData, setWorkoutExercisesHistory, setError, clearError, removeExercise, setCustomExercises, setGlobalExercises, addExerciseToCurrentWorkout, removeExerciseFromCurrentWorkout } = exercisesSlice.actions;
+export const { fetchData, setWorkoutExercisesHistory, resetCurrentWorkoutExercises, setError, clearError, removeExercise, setCustomExercises, setGlobalExercises, addExerciseToCurrentWorkout, removeExerciseFromCurrentWorkout } = exercisesSlice.actions;
 export default exercisesSlice.reducer;

@@ -16,7 +16,7 @@ function LoginComponent() {
     if (token && !error) {
       setEmail("");
       setPassword("");
-      navigate("/workouts");
+      navigate("/current-workout");
     }
 
   
@@ -34,40 +34,42 @@ function LoginComponent() {
   };
 
 
-
   return (
-    <div>
-      <h2>Login</h2>
-       {error && <p className="error">{error.status} {error.message}</p>}
-      <form onSubmit={handleSubmit}>
+    <div className="bg-gray-900 min-h-screen text-white p-6">
+      <h2 className="text-3xl font-bold mb-6">Login</h2>
+      {error && <div className="alert alert-error mb-4">{error.status} {error.message}</div>}
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label>Email: </label>
+          <label className="block text-sm font-semibold mb-2">Email:</label>
           <input 
-            type="email" 
+            type="text" 
             value={email} 
             onChange={e => {
-              setEmail(e.target.value)
-              dispatch(clearError())}}
-            required 
+              setEmail(e.target.value);
+              dispatch(clearError());
+            }}
+            className="input input-bordered w-full"
           />
         </div>
         <div>
-          <label>Passwort: </label>
+          <label className="block text-sm font-semibold mb-2">Passwort:</label>
           <input 
             type="password" 
             value={password} 
             onChange={e => {
-              setPassword(e.target.value)
-              dispatch(clearError())}}
-            required 
+              setPassword(e.target.value);
+              dispatch(clearError());
+            }}
+            className="input input-bordered w-full"
           />
         </div>
         <div>
-          <button type="submit">Einloggen</button>
+          <button type="submit" className="btn btn-primary w-full mt-4">Einloggen</button>
         </div>
       </form>
     </div>
   );
 }
+
 
 export default LoginComponent;

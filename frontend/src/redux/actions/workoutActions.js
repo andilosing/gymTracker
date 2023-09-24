@@ -1,5 +1,5 @@
 
-import { setWorkoutHistory, setError, startWorkout } from '../slices/workoutSlice';
+import { fetchData, setError, startWorkout, addWorkoutToHistory } from '../slices/workoutSlice';
 import { baseQueryWithReauth } from '../../api/api';
 
 export const fetchWorkoutsHistory = () => {
@@ -13,7 +13,7 @@ export const fetchWorkoutsHistory = () => {
             console.log("abgerufende workout: ", data)
 
             if (Array.isArray(data)) { 
-                dispatch(setWorkoutHistory(data));
+                dispatch(fetchData(data));
             } else {
                 dispatch(setError({status: "Error", message: "Data is not in expected format" }));
             }
@@ -43,6 +43,37 @@ export const beginWorkout = () => {
 
         } catch (error) {
             console.error('Error starting workout:', error);
+            dispatch(setError({status: error.status, message: error.message }));
+        }
+    };
+};
+
+
+export const endWorkout = (workoutId) => {
+    return async (dispatch, getState) => {
+        try {
+            // Sicherstellen, dass eine workoutId bereitgestellt wurde
+            if (!workoutId) {
+                throw new Error("No workout ID provided.");
+            }
+
+            const options = {
+                method: 'PUT',
+            };
+
+            // Hinzufügen der workoutId zum Pfad
+            const data = await baseQueryWithReauth(`/workouts/${workoutId}`, options, dispatch, getState);
+            console.log("Beendetes Workout: ", data)
+
+            // Hier kannst du überprüfen, ob die Daten wie erwartet zurückgegeben werden und gegebenenfalls einen Dispatch auslösen
+            if (data && data.id && data.end_time) { 
+                dispatch(addWorkoutToHistory(data));
+            } else {
+                dispatch(setError({status: "Error", message: "Data is not in expected format" }));
+            }
+
+        } catch (error) {
+            console.error('Error ending workout:', error);
             dispatch(setError({status: error.status, message: error.message }));
         }
     };

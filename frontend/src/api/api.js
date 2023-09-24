@@ -1,6 +1,9 @@
 import { setCredentials, logout } from "../redux/slices/authSlice";
+import { useNavigate } from 'react-router-dom';
 
 const BASE_URL = 'http://localhost:8080';
+
+
 
 
 
@@ -68,9 +71,11 @@ async function baseQueryWithReauth(endpoint, options = {}, dispatch, getState) {
                         'Authorization': `Bearer ${refreshTokenData.accessToken}`
                     }
                 }, dispatch, getState);
-                return { data: retryData };
+                return retryData ;
             } catch (refreshError) {
                 dispatch(logout());
+                
+
                 throw refreshError;
             }
         }
