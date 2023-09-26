@@ -47,20 +47,32 @@ const setsSlice = createSlice({
       const setIndex = state.currentWorkoutSets.findIndex(set => set.id === action.payload.id);
       if (setIndex !== -1) {
         const currentSet = state.currentWorkoutSets[setIndex];
+        
         const updatedSet = { ...currentSet };
     
-         // Aktualisiere `reps`, falls vorhanden, sonst setze es auf einen leeren Wert (z.B. null)
-         updatedSet.reps = action.payload.hasOwnProperty("reps") ? action.payload.reps : null;
 
-        // Aktualisiere `weight`, falls vorhanden, sonst setze es auf einen leeren Wert (z.B. null)
-          updatedSet.weight = action.payload.hasOwnProperty("weight") ? action.payload.weight : null;
+         // Aktualisiere `reps`, falls vorhanden, sonst setze es auf einen leeren Wert (z.B. null)
+         if(action.payload.hasOwnProperty("reps")) {
+          updatedSet.reps = action.payload.reps
+         }
+
+         if(action.payload.hasOwnProperty("weight")) {
+          updatedSet.weight = action.payload.weight
+         }
+
         
         // Wenn Sie auch das isLocked-Feld aktualisieren möchten:
         if (action.payload.hasOwnProperty("isLocked")) {
           updatedSet.isLocked = action.payload.isLocked;
         }
+
+        if (action.payload.hasOwnProperty("set_number")) {
+          updatedSet.set_number = action.payload.set_number;
+      }
+
+      
     
-        // Aktualisieren Sie die ID, wenn sie im payload vorhanden ist
+       // Aktualisieren Sie die ID, wenn sie im payload vorhanden ist
         if (action.payload.hasOwnProperty("id")) {
           updatedSet.id = action.payload.id;
         }

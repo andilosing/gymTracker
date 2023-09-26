@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { registerUser } from '../redux/actions/authActions';
 import { clearError } from '../redux/slices/authSlice';
 
@@ -40,7 +40,7 @@ function RegisterComponent() {
 
   return (
     <div className="bg-gray-900 min-h-screen text-white p-6">
-      <h2 className="text-3xl font-bold mb-6">Registrieren</h2>
+      <h2 className="text-3xl font-bold mb-6 text-center">Registrieren</h2>
       
       {error && <div className="alert alert-error mb-4">{error.status} {error.message}</div>}
       
@@ -102,6 +102,9 @@ function RegisterComponent() {
           <button type="submit" className="btn btn-primary w-full mt-4">Registrieren</button>
         </div>
       </form>
+      <div className="mt-4 text-center">
+  Schon registriert? <Link to="/login" className="underline">Hier einloggen</Link>
+</div>
     </div>
   );
   

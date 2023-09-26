@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../redux/actions/authActions';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { clearError } from '../redux/slices/authSlice';
 
 function LoginComponent() {
@@ -36,7 +36,7 @@ function LoginComponent() {
 
   return (
     <div className="bg-gray-900 min-h-screen text-white p-6">
-      <h2 className="text-3xl font-bold mb-6">Login</h2>
+      <h2 className="text-3xl font-bold mb-6 text-center">Login</h2>
       {error && <div className="alert alert-error mb-4">{error.status} {error.message}</div>}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -67,6 +67,9 @@ function LoginComponent() {
           <button type="submit" className="btn btn-primary w-full mt-4">Einloggen</button>
         </div>
       </form>
+      <div className="mt-4 text-center">
+        Noch kein Account? <Link to="/register" className="underline">Hier registrieren</Link>
+      </div>
     </div>
   );
 }

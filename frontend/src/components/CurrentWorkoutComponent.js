@@ -60,7 +60,7 @@ function CurrentWorkoutComponent() {
 
     const handleExerciseSelected = (exercise) => {
         const isExerciseAlreadyAdded = currentWorkoutExercises.some(e => e.id === exercise.id);
-        console.log("exercise: ", exercise.id , " type  :   ", exercise.type)
+        
 
 
         //predefined sets
@@ -146,28 +146,43 @@ function CurrentWorkoutComponent() {
     
     const handleRemoveSetClick = (setId) => {
         const setToRemoveIndex = currentSets.findIndex(set => set.id === setId);
-        
-        if (setToRemoveIndex !== -1 && setToRemoveIndex !== currentSets.length - 1) {
-            for (let i = setToRemoveIndex; i < currentSets.length; i++) {
-                console.log("set to remove index: ", i)
-                console.log("set at index: ", currentSets[i])
-                if (i === currentSets.length - 1) {
-                    // Den letzten Set entfernen
-                    dispatch(removeSetFromCurrentWorkout(currentSets[i].id));
-                } else {
-                    // Aktualisieren Sie den aktuellen Set mit den Werten des nächsten Sets
-                    dispatch(updateSetInCurrentWorkout({
-                        id: currentSets[i].id,
-                        reps: currentSets[i + 1].reps || null,
-                        weight: currentSets[i + 1].weight || null,
-                        isLocked: currentSets[i + 1].isLocked || null,
-                    }));
-                }
-            }
-        } else if (setToRemoveIndex === currentSets.length - 1) {
-            // Wenn das zu entfernende Set das letzte ist, entfernen Sie es einfach
-            dispatch(removeSetFromCurrentWorkout(setId));
-        }
+
+
+
+        dispatch(removeSetFromCurrentWorkout(setId));
+
+
+        // Aktualisieren Sie die Set-Nummern für die restlichen Sets
+    for (let i = setToRemoveIndex; i < currentSets.length; i++) {
+        const currentSet = currentSets[i];
+        dispatch(updateSetInCurrentWorkout({
+            id: currentSet.id,
+            set_number: currentSet.set_number - 1,
+        }));
+    }
+        // const setToRemoveIndex = currentSets.findIndex(set => set.id === setId);
+        // 
+        // if (setToRemoveIndex !== -1 && setToRemoveIndex !== currentSets.length - 1) {
+        //     for (let i = setToRemoveIndex; i < currentSets.length; i++) {
+               
+        //         if (i === currentSets.length - 1) {
+        //             // Den letzten Set entfernen
+        //             dispatch(removeSetFromCurrentWorkout(currentSets[i].id));
+        //         } else {
+        //             // Aktualisieren Sie den aktuellen Set mit den Werten des nächsten Sets
+        //             dispatch(updateSetInCurrentWorkout({
+        //                 id: currentSets[i].id,
+        //                 reps: currentSets[i + 1].reps || null,
+        //                 weight: currentSets[i + 1].weight || null,
+        //                 isLocked: currentSets[i + 1].isLocked || null,
+        //                 newId: generateId(),
+        //             }));
+        //         }
+        //     }
+        // } else if (setToRemoveIndex === currentSets.length - 1) {
+        //     // Wenn das zu entfernende Set das letzte ist, entfernen Sie es einfach
+        //     dispatch(removeSetFromCurrentWorkout(setId));
+        // }
     };
     const handleLockToggle = (setId) => {
         const setToToggle = currentSets.find(set => set.id === setId);
@@ -234,6 +249,7 @@ function CurrentWorkoutComponent() {
 
 
       const handleEndClick = async () => {  // Diese Funktion muss nun async sein
+        try {
         
         const filteredSets = currentSets.filter(set => set.isLocked);
             filteredSets.sort((a, b) => a.exerciseId - b.exerciseId);
@@ -246,37 +262,29 @@ function CurrentWorkoutComponent() {
                 addedExercises.push(addedExercise);
             }
 
-            console.log("added Exercises: ", addedExercises)
-            
-            console.log("filtered sets: ", filteredSets)
+         
 
             for (let addedExercise of addedExercises) {
                 // Hier überprüfen wir, ob die addedExercise eine globale oder benutzerdefinierte ID hat
-                console.log("added exercise: ", addedExercise)
-                console.log("added exercise workout id: ", addedExercise.workout_id)
-                console.log("added Exercxise id; ", addedExercise.workout_exercise_id)
+             
                 const correctExerciseId = addedExercise.global_exercise_id ? addedExercise.global_exercise_id : addedExercise.user_exercise_id;
                 const exerciseType = addedExercise.global_exercise_id ? "global" : "custom"
 
-                console.log("exercise typexxxxx: " , exerciseType)
-
-                console.log("corrct exercise id : ", correctExerciseId)
 
                 // Finde alle Sets, deren exerciseId mit der correctExerciseId übereinstimmt
                 const matchingSets = filteredSets.filter(set => set.exerciseId === correctExerciseId && set.exerciseType === exerciseType);
 
-                console.log("matching sets: ", matchingSets)
-                console.log("first matching set: ", matchingSets[0])
+         
 
                 let currentSetNumber = 1;
 
                 for (let set of matchingSets) {
-                    console.log("first set", set)
+                  
                     const currentExerciseId = addedExercise.workout_exercise_id;
-                    console.log("current Exercise id in db: ", addedExercise.workout_exercise_id)
+           
                     const correctSetNumber  = currentSetNumber++;
 
-                    console.log("curren workoiut id: ", currentWorkout.id, "current set: ", set)
+
 
 
                     dispatch(addSetToExerciseInWorkout(currentWorkout.id, addedExercise.workout_exercise_id, set.reps, set.weight, correctSetNumber));
@@ -291,6 +299,11 @@ function CurrentWorkoutComponent() {
             
                 
                 setWorkoutDuration(0);
+
+        } catch (error) {
+                    // Hier können Sie den Fehler behandeln und dem Benutzer eine Nachricht anzeigen oder entsprechend reagieren.
+                    console.error("Ein Fehler ist aufgetreten: ", error);
+                }
             };
             
 
@@ -311,7 +324,7 @@ const getLastSetsForExercise = (exerciseId, exerciseType) => {
         validExercises = customExercises;
     }
 
-    console.log("vailid exercises: ", validExercises)
+   
 
     // Überprüfen, ob die exerciseId in der validExercises Liste ist
     if (!validExercises.some(exercise => exercise.id === exerciseId)) {
@@ -327,7 +340,7 @@ const getLastSetsForExercise = (exerciseId, exerciseType) => {
         matchingExercises = exercisesWorkoutHistory.filter(exercise => exercise.user_exercise_id === exerciseId);
     }
 
-    console.log("matching exercises: ", matchingExercises)
+
 
     const workout_exercise_id = matchingExercises.map(exercise => exercise.workout_exercise_id);
 
@@ -337,7 +350,7 @@ const getLastSetsForExercise = (exerciseId, exerciseType) => {
     // Filtern der Sätze, die der höchsten workout_exercise_id entsprechen
     const latestSets = setsWorkoutHistory.filter(set => set.workout_exercise_id === maxWorkoutExerciseId);
 
-    console.log("latest sets: ", latestSets)
+
     return latestSets;
 };
 
@@ -375,8 +388,8 @@ const getLastSetsForExercise = (exerciseId, exerciseType) => {
                         </button>
                     </div>
     
-                    {currentSets.filter(set => set.exerciseId === exercise.id).map((set, idx) => (
-    <div key={idx} className={`flex items-center space-x-2 mt-2 ${set.isLocked ? 'bg-green-500' : ''}`}>
+                    {currentSets.filter(set => set.exerciseId === exercise.id).map((set) => (
+    <div key={set.id} className={`flex items-center space-x-2 mt-2 ${set.isLocked ? 'bg-green-500' : ''}`}>
         <span className="bg-gray-800 p-2 rounded-full">{set.set_number}</span>
         
         <input 

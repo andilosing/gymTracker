@@ -12,7 +12,23 @@ import BottomNavComponent from './components/BottomNavComponent';
 
 
 
+import { useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+
 function App() {
+
+  const token = useSelector((state) => state.auth.token);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (!token && location.pathname !== "/login" && location.pathname !== "/register") {
+      navigate('/login');
+    }
+  }, [token, navigate, location.pathname]);
+
+
   return (
     <div className="flex flex-col min-h-screen pb-16">
     <div className="flex-grow">
@@ -38,7 +54,7 @@ function App() {
     </Routes>
     </div>
 
-     <BottomNavComponent />
+    {token ? <BottomNavComponent /> : null}
      </div>
    
   );
