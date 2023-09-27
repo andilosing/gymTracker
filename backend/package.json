@@ -12,7 +12,6 @@
   },
 
   "scripts": {
-    "start": "nodemon app.js",
-    "prod": "node app.js"
+    "start": "node app.js"
   }
 }
