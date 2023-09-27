@@ -1,5 +1,0 @@
-staticSites:
-  - name: reprise
-    buildCommand: npm install && npm run build
-    publishDir: build
-    nodeVersion: 18.16.1
