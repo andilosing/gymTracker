@@ -15,7 +15,7 @@ const authTokenMiddleware = require("./middlewares/authTokenMiddleware")
 const authRoleMiddleware = require("./middlewares/authRoleMiddleware")
 
 const corsOptions = {
-    origin: 'http://localhost:3000',
+    origin: 'https://reprise.onrender.com/',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
 };
