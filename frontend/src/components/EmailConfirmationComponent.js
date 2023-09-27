@@ -13,7 +13,7 @@ function EmailConfirmationComponent() {
     useEffect(() => {
         async function confirm() {
             try {
-                const response = await fetch(`http://localhost:8080/auth/confirm-email/${token}`, {
+                const response = await fetch(`https://reprise-api.onrender.com/auth/confirm-email/${token}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
