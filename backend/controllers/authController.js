@@ -74,7 +74,9 @@ const login = async (req, res) => {
 
         const result = await authService.login(email, password);
 
-        res.cookie('refreshToken', result.refreshToken, { httpOnly: true, maxAge: 14400000 }); // 4h
+        res.cookie('refreshToken', result.refreshToken, { httpOnly: true, sameSite: 'none', secure: true, maxAge: 14400000 });
+
+       // res.cookie('refreshToken', result.refreshToken, { httpOnly: true, maxAge: 14400000 }); // 4h
 
         res.status(200).json({
             accessToken: result.accessToken,
