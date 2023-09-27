@@ -9,12 +9,14 @@ import WorkoutHistoryComponent from './components/WorkoutHistoryComponent';
 import ExerciseListComponent from './components/ExerciseListComponent';
 import CurrentWorkoutComponent from './components/CurrentWorkoutComponent';
 import BottomNavComponent from './components/BottomNavComponent';
+import EmailConfirmationComponent from './components/EmailConfirmationComponent';
 
 
 
 import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import LogoutComponent from './components/LogoutComponent';
 
 function App() {
 
@@ -37,12 +39,15 @@ function App() {
       
         <Route path='register' element={<RegisterComponent />} />
         <Route path="login" element={<LoginComponent />} />
+        <Route path="confirm-email/:token" element={<EmailConfirmationComponent />} />
 
         <Route element={<RequireAuth />}>
           <Route element={<RequireEmailConfirmation />}>
+            
             <Route path='/workouts' element={ <WorkoutHistoryComponent />} />
             <Route path='/exercise-list' element={ <ExerciseListComponent />} />
             <Route path='/current-workout' element={ <CurrentWorkoutComponent />} />
+            <Route path='/logout' element={ <LogoutComponent /> } />
 
 
             
@@ -54,7 +59,7 @@ function App() {
     </Routes>
     </div>
 
-    {token ? <BottomNavComponent /> : null}
+      {token ? <BottomNavComponent /> : null}
      </div>
    
   );

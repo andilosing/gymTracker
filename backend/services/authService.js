@@ -47,7 +47,7 @@ const sendConfirmationEmail = async (email) => {
         from: `Gopnik <${process.env.EMAIL_USER}>`,
         to: email,
         subject: 'Bestätigen Sie Ihre E-Mail-Adresse',
-        text: `Klicken Sie auf den folgenden Link, um Ihre E-Mail-Adresse zu bestätigen: http://localhost8080/auth/confirm-token/${token}`
+        text: `Klicken Sie auf den folgenden Link, um Ihre E-Mail-Adresse zu bestätigen: http://localhost:3000/confirm-email/${token}`
     };
 
     try {

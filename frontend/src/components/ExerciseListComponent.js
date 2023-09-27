@@ -39,7 +39,7 @@ function ExerciseListComponent({ onExerciseSelected, addedExercises }) {
                     <li key={exercise.id} className="bg-gray-700 shadow-md rounded-md p-4 flex justify-between items-center">
                         <div>
                             <p className="font-medium">{exercise.name}</p>
-                            <p className="text-sm">{exercise.type}</p>
+                           
                         </div>
                         <div className="space-x-2">
                             <button 
@@ -48,11 +48,7 @@ function ExerciseListComponent({ onExerciseSelected, addedExercises }) {
                             >
                                 Auswählen
                             </button>
-                            {exercise.type === 'custom' && (
-                                <button className="btn btn-secondary btn-sm">
-                                    Edit Custom Exercise
-                                </button>
-                            )}
+                          
                         </div>
                     </li>
                 ))}
@@ -62,3 +58,11 @@ function ExerciseListComponent({ onExerciseSelected, addedExercises }) {
 }
 
 export default ExerciseListComponent;
+
+/*  {exercise.type === 'custom' && (
+    <button className="btn btn-secondary btn-sm">
+    Edit Custom Exercise
+</button>
+)}
+
+gehört unter auswählen */

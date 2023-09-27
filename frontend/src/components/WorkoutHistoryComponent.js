@@ -124,10 +124,7 @@ const WorkoutHistoryComponent = () => {
                           )}
                         </div>
 
-                        <div className="flex space-x-4 text-sm text-gray-400">
-                          <span>global exercise {exercise.global_exercise_id}</span>
-                          <span>user exercise {exercise.user_exercise_id}</span>
-                        </div>
+                       
 
                         <div className="mt-4">
                           {sets.filter(set => set.workout_exercise_id === exercise.workout_exercise_id).length > 0 && (
