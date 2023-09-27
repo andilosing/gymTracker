@@ -150,7 +150,7 @@ const createWorkoutSetsTable = async () => {
             workout_exercise_id INT REFERENCES workout_exercises(id) ON DELETE CASCADE,
             reps INT NOT NULL,
             weight DECIMAL,
-            set_number INT NOT NULL UNIQUE
+            set_number INT NOT NULL
         );
         `;
 
