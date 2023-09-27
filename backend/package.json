@@ -9,5 +9,10 @@
     "nodemailer": "^6.9.5",
     "nodemon": "^3.0.1",
     "pg": "^8.11.3"
+  },
+
+  "scripts": {
+    "start": "nodemon app.js",
+    "prod": "node app.js"
   }
 }
