@@ -13,7 +13,7 @@ const generateAccessToken = (user) => {
             email_verified: user.email_verified,
             role: user.role
         }
-        const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: '30s' });  
+        const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: '5h' });  
         return accessToken;
     } catch (error) {
         console.error("Fehler beim Generieren des Access Tokens:", error);
@@ -31,7 +31,7 @@ const generateRefreshToken = (user) => {
             email_verified: user.email_verified,
             role: user.role
         }
-        const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_TOKEN_SECRET, { expiresIn: '1h' });  
+        const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_TOKEN_SECRET, { expiresIn: '1d' });  
         return refreshToken;
     } catch (error) {
         console.error("Fehler beim Generieren des Refresh Tokens:", error);
